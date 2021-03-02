@@ -12,6 +12,11 @@ public class Date implements Comparable<Date> {
     }
 
     @Override
+    public String toString() {
+        return year + "/" + month + "/" + day;
+    }
+
+    @Override
     public int compareTo(Date date) {
         if (this.year < date.year) {
             return 1;
