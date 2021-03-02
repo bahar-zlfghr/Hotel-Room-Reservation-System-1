@@ -1,7 +1,5 @@
 package com.maktab.java;
 
-import java.util.Date;
-
 public class RoomReservation {
     private String fullName;
     private String nationalCode;
