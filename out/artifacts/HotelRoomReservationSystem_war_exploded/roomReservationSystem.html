@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
+    <title>Room Reservation System</title>
+</head>
+<body>
+    <h1><br>*.*.* In the name of God *.*.*<br></h1>
+    <pre>* Welcome to the hotel room reservation system *</pre>
+
+    <hr>
+
+    <h3># Please select the option you want: </h3>
+    <form action="roomReservation" method="post" target="_parent">
+        <input type="radio" name="mainForm" value="reserve a room">
+        <label> Reserve a room</label>
+
+        <div id="option1" class="forms">
+            <h4># Please complete the form below</h4>
+                <label> Full name</label>
+                <input type="text" name="fullName">
+                <br>
+
+                <br>
+                <label> National code</label>
+                <input type="text" name="nationalCode">
+                <br>
+
+                <br>
+                <label> Start date</label>
+                <input type="text" name="startDate">
+                <br>
+
+                <br>
+                <label> End date</label>
+                <input type="text" name="endDate">
+                <br>
+
+                <br>
+                <label> Room capacity</label>
+                <input type="number" name="roomCapacity">
+                <br>
+        </div>
+
+        <br>
+
+        <input type="radio" name="mainForm" value="change reserve info">
+        <label> Change reserve information</label>
+
+        <div id="option2" class="forms">
+            <h4># Please complete the form below</h4>
+            <label> Reserve Code</label>
+            <input type="text" name="reserveCode">
+
+            <div id="changeReserveInfo">
+                <br>
+                <label> Start date</label>
+                <input type="text" name="startDate">
+                <br>
+
+                <br>
+                <label> End date</label>
+                <input type="text" name="endDate">
+                <br>
+
+                <br>
+                <label> Room capacity</label>
+                <input type="number" name="roomCapacity">
+                <br>
+            </div>
+            <br>
+        </div>
+
+        <br>
+
+        <input type="radio" name="mainForm" value="see reserve(s) info">
+        <label> See reserve(s) information</label>
+
+        <div id="option3" class="forms">
+            <h4># Please complete the form below (One of them is enough)</h4>
+            <label> National Code</label>
+            <input type="text" name="nationalCode">
+            <br>
+
+            <br>
+            <label> Reserve Code</label>
+            <input type="text" name="reserveCode">
+            <br>
+        </div>
+
+        <br>
+
+        <input type="radio" name="mainForm" value="cancel reserve">
+        <label> Cancel reserve</label>
+
+        <div id="option4" class="forms">
+            <h4># Please complete the form below</h4>
+            <label> Reserve Code</label>
+            <input type="text" name="reserveCode">
+            <br>
+        </div>
+
+        <br>
+        <input type="submit" value="Submit" id="submitButton">
+    </form>
+</body>
+
+<style>
+    body {
+        background-color: beige;
+        font-family: "Sofia", sans-serif;
+        height: 2000px;
+        width: 900px;
+        margin: auto;
+    }
+
+    pre {
+        font-family: Sofia, sans-serif;
+        font-size: 20px;
+        text-align: center
+    }
+
+    h1 {
+        text-align: center;
+        color: crimson;
+        font-size: 25px;
+    }
+
+    hr {
+        width:100%;
+        text-align:center;
+        margin-left:0;
+        color: crimson;
+    }
+
+    input {
+        font-size: large;
+        padding: 5px;
+    }
+
+    div {
+        width: auto;
+        text-align: center;
+        background-color: gainsboro;
+        margin-top: 20px;
+        padding: 10px 0 20px 20px;
+    }
+
+    #changeReserveInfo {
+        text-align: left;
+        width: auto;
+        background-color: darkgray;
+        margin-top: 20px;
+        margin-right: 20px;
+        padding-top: 1px;
+    }
+
+    .forms {
+        text-align: left;
+    }
+
+    #submitButton {
+        font-family: Sofia, sans-serif;
+        font-size: large;
+    }
+</style>
+</html>
