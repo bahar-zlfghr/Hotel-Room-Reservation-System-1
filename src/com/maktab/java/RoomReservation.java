@@ -33,12 +33,24 @@ public class RoomReservation {
         return startDate;
     }
 
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
     public Date getEndDate() {
         return endDate;
     }
 
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
     public int getRoomCapacity() {
         return roomCapacity;
+    }
+
+    public void setRoomCapacity(int roomCapacity) {
+        this.roomCapacity = roomCapacity;
     }
 
     public int getRoomNumber() {
