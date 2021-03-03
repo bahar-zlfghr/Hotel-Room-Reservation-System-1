@@ -17,13 +17,6 @@ public class SystemFilter implements Filter {
         PrintWriter writer = response.getWriter();
         writer.print("<html><head><meta charset=\"UTF-8\"></head><body>");
         String option = request.getParameter("mainForm");
-        String fullName;
-        String nationalCode;
-        String startDate;
-        String endDate;
-        int roomCapacity;
-        int roomNumber;
-        int reserveCode;
         switch (option) {
             case "reserve a room":
                 reserveRoom(writer, request, response, chain);
@@ -32,14 +25,14 @@ public class SystemFilter implements Filter {
                 changeRoomInfo(writer, request, response, chain);
                 break;
             case "see reserve(s) info":
+                seeReservesInfo(writer, request, response, chain);
                 break;
             case "cancel reserve":
+                cancelReserve(writer, request, response, chain);
                 break;
         }
         writer.print("</html></body>");
         writer.close();
-
-//        chain.doFilter(request, response);
     }
 
     public void init(FilterConfig config) throws ServletException {
@@ -56,23 +49,25 @@ public class SystemFilter implements Filter {
                     chain.doFilter(request, response);
                 }
                 else {
-                    printMessageForRoomCapacity(request, response, writer);
+                    printMessageForRoomCapacity(writer);
+                    request.getRequestDispatcher("roomReservationSystem.html").include(request, response);
                 }
             }
             else {
-                printMessageForStartAndEndDate(request, response, writer);
+                printMessageForStartAndEndDate(writer);
+                request.getRequestDispatcher("roomReservationSystem.html").include(request, response);
             }
         }
         else {
-            printMessageForNationalCode(request, response, writer);
+            printMessageForNationalCode(writer);
+            request.getRequestDispatcher("roomReservationSystem.html").include(request, response);
         }
     }
 
     private void changeRoomInfo(PrintWriter writer, ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        int reserveCode = Integer.parseInt(request.getParameter("reserveCode2"));
+        String reserveCode = request.getParameter("reserveCode2");
         String startDate = request.getParameter("startDate2");
         String endDate = request.getParameter("endDate2");
-        System.out.println(reserveCode + " " + startDate + " " + endDate);
         int roomCapacity = Integer.parseInt(request.getParameter("roomCapacity2"));
         if (validateReserveCode(reserveCode)) {
             if (validateStartAndEndDate(startDate, endDate)) {
@@ -80,15 +75,42 @@ public class SystemFilter implements Filter {
                     chain.doFilter(request, response);
                 }
                 else {
-                    printMessageForRoomCapacity(request, response, writer);
+                    printMessageForRoomCapacity(writer);
+                    request.getRequestDispatcher("roomReservationSystem.html").include(request, response);
                 }
             }
             else {
-                printMessageForStartAndEndDate(request, response, writer);
+                printMessageForStartAndEndDate(writer);
+                request.getRequestDispatcher("roomReservationSystem.html").include(request, response);
             }
         }
         else {
-            printMessageForReserveCode(request, response, writer);
+            printMessageForReserveCode(writer);
+            request.getRequestDispatcher("roomReservationSystem.html").include(request, response);
+        }
+    }
+
+    private void seeReservesInfo(PrintWriter writer, ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        String nationalCode = request.getParameter("nationalCode3");
+        String reserveCode = request.getParameter("reserveCode3");
+        if (validateNationalCode(nationalCode) || validateReserveCode(reserveCode)) {
+            chain.doFilter(request, response);
+        }
+        else {
+            printMessageForNationalCode(writer);
+            printMessageForReserveCode(writer);
+            request.getRequestDispatcher("roomReservationSystem.html").include(request, response);
+        }
+    }
+
+    private void cancelReserve(PrintWriter writer, ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        String reserveCode = request.getParameter("reserveCode4");
+        if (validateReserveCode(reserveCode)) {
+            chain.doFilter(request, response);
+        }
+        else {
+            printMessageForReserveCode(writer);
+            request.getRequestDispatcher("roomReservationSystem.html").include(request, response);
         }
     }
 
@@ -126,41 +148,35 @@ public class SystemFilter implements Filter {
 
     private boolean validateDateFormat(String date) {
         if (date.matches("^[1-4]\\d{3}/((0[1-6]/((3[0-1])|([1-2][0-9])|(0[1-9])))|((1[0-2]|(0[7-9]))/(30|([1-2][0-9])|(0[1-9]))))$")) {
-            System.out.println("yes!");
-            return true;
-        }
-        System.out.println("no!");
-        return false;
-    }
-
-    private boolean validateReserveCode(int reserveCode) {
-        String reserveCodeStr = String.valueOf(reserveCode);
-        if (reserveCodeStr.length() == 5 && reserveCodeStr.matches("[0-9]+")) {
             return true;
         }
         return false;
     }
 
-    private void printMessageForNationalCode(ServletRequest request, ServletResponse response, PrintWriter writer) throws ServletException, IOException {
+    private boolean validateReserveCode(String reserveCode) {
+        if (reserveCode.length() == 5 && reserveCode.matches("[0-9]+")) {
+            return true;
+        }
+        return false;
+    }
+
+    private void printMessageForNationalCode(PrintWriter writer) {
         writer.println("<div><h4>!Error: The national code must contain 10 digits...</h4></div>");
-        request.getRequestDispatcher("roomReservationSystem.html").include(request, response);
+
     }
 
-    private void printMessageForStartAndEndDate(ServletRequest request, ServletResponse response, PrintWriter writer) throws ServletException, IOException {
+    private void printMessageForStartAndEndDate(PrintWriter writer) {
         writer.println("<div><h4> !Error: The start or end date must be in yyyy/mm/dd format...</h4>" +
                         "<h4> And</h4>" +
                         "<h4> The end date must be at least one day after the start date of the stay...</h4>" +
                         "</div>");
-        request.getRequestDispatcher("roomReservationSystem.html").include(request, response);
     }
 
-    private void printMessageForRoomCapacity(ServletRequest request, ServletResponse response, PrintWriter writer) throws ServletException, IOException {
+    private void printMessageForRoomCapacity(PrintWriter writer) {
         writer.println("<div><h4> !Error: The room capacity should be between 1 and 4...</h4></div>");
-        request.getRequestDispatcher("roomReservationSystem.html").include(request, response);
     }
 
-    private void printMessageForReserveCode(ServletRequest request, ServletResponse response, PrintWriter writer) throws ServletException, IOException {
+    private void printMessageForReserveCode(PrintWriter writer) {
         writer.println("<div><h4> !Error: The reserve code must contain 5 digits...</h4></div>");
-        request.getRequestDispatcher("roomReservationSystem.html").include(request, response);
     }
 }
