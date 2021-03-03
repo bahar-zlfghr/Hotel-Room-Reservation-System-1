@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "RoomReservationServlet")
 public class RoomReservationServlet extends HttpServlet {
@@ -26,15 +28,19 @@ public class RoomReservationServlet extends HttpServlet {
         switch (option) {
             case "reserve a room":
                 reserveRoom(request, writer);
-                request.getRequestDispatcher("roomReservationSystem.html").include(request, response);
+                continueProcess(request, response);
                 break;
             case "change reserve info":
                 changeReserve(request, writer);
-                request.getRequestDispatcher("roomReservationSystem.html").include(request, response);
+                continueProcess(request, response);
                 break;
             case "see reserve(s) info":
+                seeRoomsInfo(request, writer);
+                continueProcess(request, response);
                 break;
             case "cancel reserve":
+                cancelReserve(request, writer);
+                continueProcess(request, response);
                 break;
         }
         writer.print("</body></html>");
@@ -79,17 +85,90 @@ public class RoomReservationServlet extends HttpServlet {
             room.setEndDate(eDate);
             room.setRoomCapacity(roomCapacity);
             writer.println("<div>" +
-                    "<h3> Changes saved successfully</h3>" +
+                    "<h3> Your changes saved successfully</h3>" +
                     "</div>");
         }
         else {
             writer.println("<div>" +
-                    "<h3> !Error: Room with reservation code " + reserveCode + "not found" + "</h3>" +
+                    "<h3> !Error: Room with reserve code " + reserveCode + " not found" + "</h3>" +
+                    "</div>");
+        }
+    }
+
+    private void seeRoomsInfo(HttpServletRequest request, PrintWriter writer) {
+        String nationalCode = request.getParameter("nationalCode3");
+        String reserveCode = request.getParameter("reserveCode3");
+        if (!nationalCode.isEmpty()) {
+            List<RoomReservation> rooms = getRoomByNationalCode(nationalCode);
+            int numberOfRoom = rooms.size();
+            if (numberOfRoom == 0) {
+                writer.println("<div>" +
+                        "<h3> !Warning: You have not reserved a room yet...</h3>" +
+                        "</div>");
+            } else {
+                int i = 1;
+                String roomsList = "";
+                for (RoomReservation room : rooms) {
+                    roomsList += "<h3>" + "Room " + i + ": <br>"
+                            + "Full name: " + room.getFullName() + "<br>"
+                            + "Room number: " + room.getRoomNumber() + "<br>"
+                            + "Start date: " + room.getStartDate() + "<br>"
+                            + "End date: " + room.getEndDate() + "<br>"
+                            + "Reserve code: " + room.getReserveCode() + "<br>"
+                            + "Room capacity: " + room.getRoomCapacity() + "<br></h3>";
+                    i++;
+                }
+                writer.println("<div>" + roomsList + "</div>");
+            }
+        }
+        else {
+            Optional<RoomReservation> optionalRoom = getRoomByReserveCode(Integer.parseInt(reserveCode));
+            if (optionalRoom.isPresent()) {
+                RoomReservation room = optionalRoom.get();
+                writer.println("<div>"
+                        + "<h3> Room1: <br>"
+                        + "Full name: " + room.getFullName() + "<br>"
+                        + "Room number: " + room.getRoomNumber() + "<br>"
+                        + "Start date: " + room.getStartDate() + "<br>"
+                        + "End date: " + room.getEndDate() + "<br>"
+                        + "Reserve code: " + room.getReserveCode() + "<br>"
+                        + "Room capacity: " + room.getRoomCapacity() + "<br></h3>"
+                        + "</div>");
+            }
+            else {
+                writer.println("<div>" +
+                        "<h3> !Error: Room with reservation code " + reserveCode + " not found" + "</h3>" +
+                        "</div>");
+            }
+        }
+    }
+
+    private void cancelReserve(HttpServletRequest request, PrintWriter writer) {
+        int reserveCode = Integer.parseInt(request.getParameter("reserveCode4"));
+        Optional<RoomReservation> optionalRoom = getRoomByReserveCode(reserveCode);
+        if (optionalRoom.isPresent()) {
+            RoomReservation room = optionalRoom.get();
+            rooms.remove(room);
+            writer.println("<div>" +
+                    "<h3> Your reservation was successfully canceled</h3>" +
+                    "</div>");
+        }
+        else {
+            writer.println("<div>" +
+                    "<h3> !Error: Room with reserve code " + reserveCode + " not found" + "</h3>" +
                     "</div>");
         }
     }
 
     private Optional<RoomReservation> getRoomByReserveCode(int reserveCode) {
         return rooms.stream().filter(room -> room.getReserveCode() == reserveCode).findFirst();
+    }
+
+    private List<RoomReservation> getRoomByNationalCode(String nationalCode) {
+        return rooms.stream().filter(room -> room.getNationalCode().equals(nationalCode)).collect(Collectors.toList());
+    }
+
+    private void continueProcess(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("roomReservationSystem.html").include(request, response);
     }
 }
