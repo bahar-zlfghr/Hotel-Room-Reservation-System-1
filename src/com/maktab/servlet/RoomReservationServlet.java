@@ -1,8 +1,7 @@
 package com.maktab.servlet;
 
-import com.maktab.filter.SystemFilter;
-import com.maktab.java.Date;
 import com.maktab.java.RoomReservation;
+import com.maktab.service.RoomReservationDao;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,7 +17,11 @@ import java.util.stream.Collectors;
 
 @WebServlet(name = "RoomReservationServlet")
 public class RoomReservationServlet extends HttpServlet {
-    private ArrayList<RoomReservation> rooms = new ArrayList<>();
+    private static ArrayList<RoomReservation> rooms = new ArrayList<>();
+
+    static {
+        RoomReservationDao.getReservesInfo();
+    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
@@ -59,7 +62,8 @@ public class RoomReservationServlet extends HttpServlet {
                 request.getParameter("endDate1"),
                 Integer.parseInt(request.getParameter("roomCapacity1"))
         );
-        rooms.add(room);
+        addRoom(room);
+        RoomReservationDao.insertReserve(room);
         writer.println("<div>" +
                 "<h3> The room was reserved for you successfully</h3>" +
                 "<h3> Room number = " + room.getRoomNumber() + "</h3>" +
@@ -78,6 +82,7 @@ public class RoomReservationServlet extends HttpServlet {
             room.setStartDate(startDate);
             room.setEndDate(endDate);
             room.setRoomCapacity(roomCapacity);
+            RoomReservationDao.updateReserve(room);
             writer.println("<div>" +
                     "<h3> Your changes saved successfully</h3>" +
                     "</div>");
@@ -142,7 +147,8 @@ public class RoomReservationServlet extends HttpServlet {
         Optional<RoomReservation> optionalRoom = getRoomByReserveCode(reserveCode);
         if (optionalRoom.isPresent()) {
             RoomReservation room = optionalRoom.get();
-            rooms.remove(room);
+            deleteRoom(room);
+            RoomReservationDao.deleteReserve(room);
             writer.println("<div>" +
                     "<h3> Your reservation was successfully canceled</h3>" +
                     "</div>");
@@ -152,6 +158,14 @@ public class RoomReservationServlet extends HttpServlet {
                     "<h3> !Error: Room with reserve code " + reserveCode + " not found" + "</h3>" +
                     "</div>");
         }
+    }
+
+    public static void addRoom(RoomReservation room) {
+        rooms.add(room);
+    }
+
+    public static void deleteRoom(RoomReservation room) {
+        rooms.remove(room);
     }
 
     private Optional<RoomReservation> getRoomByReserveCode(int reserveCode) {
