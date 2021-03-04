@@ -52,15 +52,11 @@ public class RoomReservationServlet extends HttpServlet {
     }
 
     private void reserveRoom(HttpServletRequest request, PrintWriter writer) {
-        String[] splitStartDate = request.getParameter("startDate1").split("/");
-        String[] splitEndDate = request.getParameter("endDate1").split("/");
-        Date sDate = new Date(Integer.parseInt(splitStartDate[0]), Integer.parseInt(splitStartDate[1]), Integer.parseInt(splitStartDate[2]));
-        Date eDate = new Date(Integer.parseInt(splitEndDate[0]), Integer.parseInt(splitEndDate[1]), Integer.parseInt(splitEndDate[2]));
         RoomReservation room = new RoomReservation(
                 request.getParameter("fullName1"),
                 request.getParameter("nationalCode1"),
-                sDate,
-                eDate,
+                request.getParameter("startDate1"),
+                request.getParameter("endDate1"),
                 Integer.parseInt(request.getParameter("roomCapacity1"))
         );
         rooms.add(room);
@@ -79,10 +75,8 @@ public class RoomReservationServlet extends HttpServlet {
         Optional<RoomReservation> optionalRoom = getRoomByReserveCode(reserveCode);
         if (optionalRoom.isPresent()) {
             RoomReservation room = optionalRoom.get();
-            Date sDate = SystemFilter.convertStringDateToObjectDate(startDate);
-            Date eDate = SystemFilter.convertStringDateToObjectDate(endDate);
-            room.setStartDate(sDate);
-            room.setEndDate(eDate);
+            room.setStartDate(startDate);
+            room.setEndDate(endDate);
             room.setRoomCapacity(roomCapacity);
             writer.println("<div>" +
                     "<h3> Your changes saved successfully</h3>" +
