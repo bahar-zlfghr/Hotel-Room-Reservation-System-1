@@ -3,15 +3,15 @@ package com.maktab.java;
 public class RoomReservation {
     private String fullName;
     private String nationalCode;
-    private Date startDate;
-    private Date endDate;
+    private String startDate;
+    private String endDate;
     private int roomCapacity;
     private int roomNumber; // start at 1
     private static int roomNumberValue = 1;
     private int reserveCode; // contain 5 digits
     private static int reserveCodeValue = 10000;
 
-    public RoomReservation(String fullName, String nationalCode, Date startDate, Date endDate, int roomCapacity) {
+    public RoomReservation(String fullName, String nationalCode, String startDate, String endDate, int roomCapacity) {
         this.fullName = fullName;
         this.nationalCode = nationalCode;
         this.startDate = startDate;
@@ -29,19 +29,19 @@ public class RoomReservation {
         return nationalCode;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 
