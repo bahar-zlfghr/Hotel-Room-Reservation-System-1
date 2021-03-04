@@ -1,5 +1,7 @@
 package com.maktab.java;
 
+import com.maktab.service.RoomReservationDao;
+
 public class RoomReservation {
     private String fullName;
     private String nationalCode;
@@ -7,9 +9,9 @@ public class RoomReservation {
     private String endDate;
     private int roomCapacity;
     private int roomNumber; // start at 1
-    private static int roomNumberValue = 1;
+    private static int roomNumberValue;
     private int reserveCode; // contain 5 digits
-    private static int reserveCodeValue = 10000;
+    private static int reserveCodeValue;
 
     public RoomReservation(String fullName, String nationalCode, String startDate, String endDate, int roomCapacity) {
         this.fullName = fullName;
@@ -17,8 +19,18 @@ public class RoomReservation {
         this.startDate = startDate;
         this.endDate = endDate;
         this.roomCapacity = roomCapacity;
-        this.roomNumber = roomNumberValue++;
-        this.reserveCode = reserveCodeValue++;
+        this.roomNumber = RoomReservationDao.getLastRoomNumber() + 1;
+        this.reserveCode = RoomReservationDao.getLastReserveCode() + 1;
+    }
+
+    public RoomReservation(String fullName, String nationalCode, String startDate, String endDate, int roomCapacity, int roomNumber, int reserveCode) {
+        this.fullName = fullName;
+        this.nationalCode = nationalCode;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.roomCapacity = roomCapacity;
+        this.roomNumber = roomNumber;
+        this.reserveCode = reserveCode;
     }
 
     public String getFullName() {
@@ -67,5 +79,13 @@ public class RoomReservation {
 
     public static int getReserveCodeValue() {
         return reserveCodeValue;
+    }
+
+    public static void setRoomNumberValue(int roomNumberValue) {
+        RoomReservation.roomNumberValue = roomNumberValue;
+    }
+
+    public static void setReserveCodeValue(int reserveCodeValue) {
+        RoomReservation.reserveCodeValue = reserveCodeValue;
     }
 }
