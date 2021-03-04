@@ -129,7 +129,6 @@ public class SystemFilter implements Filter {
     }
 
     private boolean validateStartAndEndDate(String startDate, String endDate) {
-        System.out.println(startDate + " " + endDate);
         if (validateDateFormat(startDate) && validateDateFormat(endDate)) {
             Date sDate = convertStringDateToObjectDate(startDate);
             Date eDate = convertStringDateToObjectDate(endDate);
